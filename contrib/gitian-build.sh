@@ -49,6 +49,7 @@ Options:
 -j		Number of processes to use. Default 2
 -m		Memory to allocate in MiB. Default 2000
 --kvm           Use KVM
+--lxc           Use LXC
 --docker        Use Docker
 --setup         Setup the gitian building environment. Uses KVM. If you want to use lxc, use the --lxc option. If you want to use Docker, use --docker. Only works on Debian-based systems (Ubuntu, Debian)
 --detach-sign   Create the assert file for detached signing. Will not commit anything.
@@ -155,10 +156,16 @@ while :; do
 	    fi
 	    ;;
         # kvm
+        --lxc)
+            lxc=true
+            docker=false
+            ;;
+        # kvm
         --kvm)
             lxc=false
             docker=false
             ;;
+        # docker
         --docker)
             lxc=false
             docker=true
