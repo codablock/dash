@@ -37,6 +37,7 @@
 #include "validationinterface.h"
 #include "versionbits.h"
 #include "warnings.h"
+#include "stacktraces.h"
 
 #include "instantx.h"
 #include "masternodeman.h"
@@ -1189,6 +1190,10 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
     CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+
+    if (GetBoolArg("-crash", false)) {
+        TestCrash();
+    }
 
     return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
 }
