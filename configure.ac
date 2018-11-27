@@ -222,11 +222,11 @@ elif test "x$enable_stacktraces" = xyes; then
     # Enable debug information but don't turn off optimization
     # (stacktraces will be suboptimal, but better than nothing)
     if test "x$GCC" = xyes; then
-        CFLAGS="$CFLAGS -g3 -fno-omit-frame-pointer"
+        CFLAGS="$CFLAGS -g1 -fno-omit-frame-pointer"
     fi
 
     if test "x$GXX" = xyes; then
-        CXXFLAGS="$CXXFLAGS -g3 -fno-omit-frame-pointer"
+        CXXFLAGS="$CXXFLAGS -g1 -fno-omit-frame-pointer"
     fi
 fi
 
