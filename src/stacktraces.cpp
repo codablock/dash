@@ -112,7 +112,7 @@ std::string DemangleSymbol(const std::string& name)
 static void my_backtrace_error_callback (void *data, const char *msg,
                                   int errnum)
 {
-    fprintf(stderr, "libbacktrace error: %d - %s\n", errnum, msg);
+    LogPrintf("libbacktrace error: %d - %s\n", errnum, msg);
 }
 
 static backtrace_state* GetLibBacktraceState()
@@ -434,7 +434,7 @@ extern "C" void __attribute__((noinline)) WRAPPED_NAME(__cxa_free_exception)(voi
 extern "C" void __attribute__((noinline)) WRAPPED_NAME(__assert_rtn)(const char *function, const char *file, int line, const char *assertion)
 {
     auto st = GetCurrentStacktraceStr(1);
-    fprintf(stderr, "%s", st.c_str());
+    LogPrintf("%s", st);
     skipAbortSignal = true;
     __real___assert_rtn(function, file, line, assertion);
 }
@@ -442,14 +442,14 @@ extern "C" void __attribute__((noinline)) WRAPPED_NAME(__assert_rtn)(const char 
 extern "C" void __attribute__((noinline)) WRAPPED_NAME(_assert)(const char *assertion, const char *file, unsigned int line)
 {
     auto st = GetCurrentStacktraceStr(1);
-    fprintf(stderr, st.c_str());
+    LogPrintf(st);
     skipAbortSignal = true;
     __real__assert(assertion, file, line);
 }
 extern "C" void __attribute__((noinline)) WRAPPED_NAME(_wassert)(const wchar_t *assertion, const wchar_t *file, unsigned int line)
 {
     auto st = GetCurrentStacktraceStr(1);
-    fprintf(stderr, st.c_str());
+    LogPrintf(st);
     skipAbortSignal = true;
     __real__wassert(assertion, file, line);
 }
@@ -457,7 +457,7 @@ extern "C" void __attribute__((noinline)) WRAPPED_NAME(_wassert)(const wchar_t *
 extern "C" void __attribute__((noinline)) WRAPPED_NAME(__assert_fail)(const char *assertion, const char *file, unsigned int line, const char *function)
 {
     auto st = GetCurrentStacktraceStr(1);
-    fprintf(stderr, st.c_str());
+    LogPrintf(st);
     skipAbortSignal = true;
     __real___assert_fail(assertion, file, line, function);
 }
@@ -562,7 +562,7 @@ static void terminate_handler()
 #endif
     }
 
-    fprintf(stderr, "%s%s", s.c_str(), s2.c_str());
+    LogPrintf("%s%s", s, s2);
 
     skipAbortSignal = true;
     std::abort();
@@ -584,7 +584,7 @@ static void HandlePosixSignal(int s)
     if (!name) {
         name = "UNKNOWN";
     }
-    fprintf(stderr, "#### signal %s ####\n%s", name, st.c_str());
+    LogPrintf("#### signal %s ####\n%s", name, st);
 
     // avoid a signal loop
     skipAbortSignal = true;
@@ -625,7 +625,7 @@ static void DoHandleWindowsException(EXCEPTION_POINTERS * ExceptionInfo)
     auto infos = GetStackFrameInfos(stackframes);
     auto infosStr = GetStackFrameInfosStr(infos);
 
-    fprintf(stderr, "#### Windows Exception %s ####\n%s", excType.c_str(), infosStr.c_str());
+    LogPrintf("#### Windows Exception %s ####\n%s", excType, infosStr);
 }
 
 LONG WINAPI HandleWindowsException(EXCEPTION_POINTERS * ExceptionInfo)
@@ -692,7 +692,7 @@ static __attribute__((noinline)) int DoCrashRecursiveLoop()
     a += b + c + d + e + f;
     if (a.empty()) {
         // will never happen
-        fprintf(stderr, "%s", a.c_str());
+        LogPrintf( "%s", a);
         return 0;
     }
     return DoCrashRecursiveLoop();
