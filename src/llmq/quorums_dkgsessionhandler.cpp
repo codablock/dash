@@ -225,6 +225,10 @@ void CDKGSessionHandler::SleepBeforePhase(QuorumPhase curPhase,
                                           double randomSleepFactor,
                                           const WhileWaitFunc& runWhileWaiting)
 {
+    if (params.type != Consensus::LLMQ_400_60 && params.type != Consensus::LLMQ_400_85) {
+        return;
+    }
+
     // expected time for a full phase
     double phaseTime = params.dkgPhaseBlocks * Params().GetConsensus().nPowTargetSpacing * 1000;
     // expected time per member
