@@ -23,6 +23,7 @@
 #include "privatesend-client.h"
 
 #include "llmq/quorums_chainlocks.h"
+#include "llmq/quorums_instantsend.h"
 
 #include <stdint.h>
 
@@ -64,9 +65,10 @@ void WalletTxToJSON(const CWalletTx& wtx, UniValue& entry)
 {
     int confirms = wtx.GetDepthInMainChain();
     bool fLocked = instantsend.IsLockedInstantSendTransaction(wtx.GetHash());
+    bool fLLMQLocked = llmq::quorumInstantSendManager->IsLocked(wtx.GetHash());
     bool chainlock = llmq::chainLocksHandler->HasChainLock(wtx.nIndex, wtx.hashBlock);
     entry.push_back(Pair("confirmations", confirms));
-    entry.push_back(Pair("instantlock", fLocked));
+    entry.push_back(Pair("instantlock", fLocked || fLLMQLocked));
     entry.push_back(Pair("chainlock", chainlock));
     if (wtx.IsCoinBase())
         entry.push_back(Pair("generated", true));
