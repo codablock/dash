@@ -539,8 +539,8 @@ public:
 
     /**
      * Whether this output is considered safe to spend. Unconfirmed transactions
-     * from outside keys and unconfirmed replacement transactions are considered
-     * unsafe and will not be used to fund new spending transactions.
+     * from outside keys are considered unsafe and will not be used to fund new
+     * spending transactions.
      */
     bool fSafe;
 
