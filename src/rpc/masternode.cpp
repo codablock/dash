@@ -664,14 +664,14 @@ UniValue masternodelist(const JSONRPCRequest& request)
 }
 
 static const CRPCCommand commands[] =
-{ //  category              name                      actor (function)         okSafe argNames
-  //  --------------------- ------------------------  -----------------------  ------ ----------
-    { "dash",               "masternode",             &masternode,             true,  {} },
-    { "dash",               "masternodelist",         &masternodelist,         true,  {} },
-    { "dash",               "getpoolinfo",            &getpoolinfo,            true,  {} },
+{ //  category              name                      actor (function)         argNames
+  //  --------------------- ------------------------  -----------------------  ----------
+    { "dash",               "masternode",             &masternode,             {} },
+    { "dash",               "masternodelist",         &masternodelist,         {} },
+    { "dash",               "getpoolinfo",            &getpoolinfo,            {} },
     { "dash",               "getprivatesendinfo",     &getprivatesendinfo,     true,  {} },
 #ifdef ENABLE_WALLET
-    { "dash",               "privatesend",            &privatesend,            false, {} },
+    { "dash",               "privatesend",            &privatesend,            {} },
 #endif // ENABLE_WALLET
 };
 

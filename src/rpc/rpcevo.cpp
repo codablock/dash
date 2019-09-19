@@ -1271,10 +1271,10 @@ UniValue _bls(const JSONRPCRequest& request)
 }
 
 static const CRPCCommand commands[] =
-{ //  category              name                      actor (function)         okSafeMode
-  //  --------------------- ------------------------  -----------------------  ----------
-    { "evo",                "bls",                    &_bls,                   false, {}  },
-    { "evo",                "protx",                  &protx,                  false, {}  },
+{ //  category              name                      actor (function)
+  //  --------------------- ------------------------  -----------------------
+    { "evo",                "bls",                    &_bls,                   {}  },
+    { "evo",                "protx",                  &protx,                  {}  },
 };
 
 void RegisterEvoRPCCommands(CRPCTable &tableRPC)
