@@ -1444,6 +1444,7 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, const std::ve
 
     bool received_new_header = false;
     const CBlockIndex *pindexLast = nullptr;
+    const CBlockIndex *pindexPrev = nullptr;
     {
         LOCK(cs_main);
         CNodeState *nodestate = State(pfrom->GetId());
@@ -1456,7 +1457,8 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, const std::ve
         //   don't connect before giving DoS points
         // - Once a headers message is received that is valid and does connect,
         //   nUnconnectingHeaders gets reset back to 0.
-        if (mapBlockIndex.find(headers[0].hashPrevBlock) == mapBlockIndex.end() && nCount < MAX_BLOCKS_TO_ANNOUNCE) {
+        auto it = mapBlockIndex.find(headers[0].hashPrevBlock);
+        if (it == mapBlockIndex.end() && nCount < MAX_BLOCKS_TO_ANNOUNCE) {
             nodestate->nUnconnectingHeaders++;
             connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexBestHeader), uint256()));
             LogPrint(BCLog::NET, "received header %s: missing prev block %s, sending getheaders (%d) to end (peer=%d, nUnconnectingHeaders=%d)\n",
@@ -1473,6 +1475,10 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, const std::ve
                 Misbehaving(pfrom->GetId(), 20);
             }
             return true;
+        }
+
+        if (it != mapBlockIndex.end()) {
+            pindexPrev = it->second;
         }
 
         uint256 hashLastBlock;
@@ -1494,11 +1500,11 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, const std::ve
     // Even though we have not processed the freshly received headers yet, we can already request the next batch of
     // headers from the same peer. Processing 2000 headers in one go takes some time and requesting the next batch
     // as fast as possible allows us to process headers while at the same time downloading the next batch of headers.
-    if (nCount == MAX_HEADERS_RESULTS) {
+    if (pindexPrev && nCount == MAX_HEADERS_RESULTS) {
         // Headers message had its maximum size; the peer may have more headers.
         // TODO: optimize: if pindexLast is an ancestor of chainActive.Tip or pindexBestHeader, continue
         // from there instead.
-        LogPrint(BCLog::NET, "more getheaders (%d) to end to peer=%d (startheight:%d)\n", pindexLast->nHeight, pfrom->GetId(), pfrom->nStartingHeight);
+        LogPrint(BCLog::NET, "more getheaders (%d) to end to peer=%d (startheight:%d)\n", pindexPrev->nHeight + nCount, pfrom->GetId(), pfrom->nStartingHeight);
         // No need to send a full blown locator with multiple block hashes, as there is no need for the other peer
         // to figure out the most recent fork-point. We know for sure that the peer has the last header that he sent
         // us by himself, so it's enough to just send this hash in the locator
