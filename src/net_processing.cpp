@@ -1562,7 +1562,11 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, const std::ve
             // TODO: optimize: if pindexLast is an ancestor of chainActive.Tip or pindexBestHeader, continue
             // from there instead.
             LogPrint(BCLog::NET, "more getheaders (%d) to end to peer=%d (startheight:%d)\n", pindexLast->nHeight, pfrom->GetId(), pfrom->nStartingHeight);
-            connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexLast), uint256()));
+            // No need to send a full blown locator with multiple block hashes, as there is no need for the other peer
+            // to figure out the most recent fork-point. We know for sure that the peer has the last header that he sent
+            // us by himself, so it's enough to just send this hash in the locator
+            CBlockLocator locator({headers.back().GetHash()});
+            connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, locator, uint256()));
         }
 
         bool fCanDirectFetch = CanDirectFetch(chainparams.GetConsensus());
