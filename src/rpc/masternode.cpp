@@ -669,7 +669,7 @@ static const CRPCCommand commands[] =
     { "dash",               "masternode",             &masternode,             {} },
     { "dash",               "masternodelist",         &masternodelist,         {} },
     { "dash",               "getpoolinfo",            &getpoolinfo,            {} },
-    { "dash",               "getprivatesendinfo",     &getprivatesendinfo,     true,  {} },
+    { "dash",               "getprivatesendinfo",     &getprivatesendinfo,     {} },
 #ifdef ENABLE_WALLET
     { "dash",               "privatesend",            &privatesend,            {} },
 #endif // ENABLE_WALLET
