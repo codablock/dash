@@ -485,7 +485,7 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
         coin_control.m_confirm_target = ParseConfirmTarget(request.params[7]);
     }
 
-    if (request.params.size() > 8 && !request.params[8].isNull()) {
+    if (!request.params[8].isNull()) {
         if (!FeeModeFromString(request.params[8].get_str(), coin_control.m_fee_mode)) {
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid estimate_mode parameter");
         }
@@ -589,7 +589,7 @@ UniValue listaddressbalances(const JSONRPCRequest& request)
     LOCK2(cs_main, pwallet->cs_wallet);
 
     CAmount nMinAmount = 0;
-    if (request.params.size() > 0)
+    if (!request.params[0].isNull())
         nMinAmount = AmountFromValue(request.params[0]);
 
     if (nMinAmount < 0)
@@ -707,7 +707,7 @@ UniValue getreceivedbyaddress(const JSONRPCRequest& request)
     int nMinDepth = 1;
     if (!request.params[1].isNull())
         nMinDepth = request.params[1].get_int();
-    bool fAddLocked = (request.params.size() > 2 && request.params[2].get_bool());
+    bool fAddLocked = (!request.params[2].isNull() && request.params[2].get_bool());
 
     // Tally
     CAmount nAmount = 0;
@@ -761,7 +761,7 @@ UniValue getreceivedbyaccount(const JSONRPCRequest& request)
     int nMinDepth = 1;
     if (!request.params[1].isNull())
         nMinDepth = request.params[1].get_int();
-    bool fAddLocked = (request.params.size() > 2 && request.params[2].get_bool());
+    bool fAddLocked = (!request.params[2].isNull() && request.params[2].get_bool());
 
     // Get the set of pub keys assigned to account
     std::string strAccount = AccountFromValue(request.params[0]);
@@ -975,7 +975,7 @@ UniValue sendfrom(const JSONRPCRequest& request)
     int nMinDepth = 1;
     if (!request.params[3].isNull())
         nMinDepth = request.params[3].get_int();
-    bool fAddLocked = (request.params.size() > 4 && request.params[4].get_bool());
+    bool fAddLocked = (!request.params[4].isNull() && request.params[4].get_bool());
 
     CWalletTx wtx;
     wtx.strFromAccount = strAccount;
@@ -1059,7 +1059,7 @@ UniValue sendmany(const JSONRPCRequest& request)
     int nMinDepth = 1;
     if (!request.params[2].isNull())
         nMinDepth = request.params[2].get_int();
-    bool fAddLocked = (request.params.size() > 3 && request.params[3].get_bool());
+    bool fAddLocked = (!request.params[3].isNull() && request.params[3].get_bool());
 
     CWalletTx wtx;
     wtx.strFromAccount = strAccount;
@@ -2154,7 +2154,7 @@ UniValue walletpassphrase(const JSONRPCRequest& request)
     int64_t nSleepTime = request.params[1].get_int64();
 
     bool fForMixingOnly = false;
-    if (request.params.size() >= 3)
+    if (!request.params[2].isNull())
         fForMixingOnly = request.params[2].get_bool();
 
     if (fForMixingOnly && !pwallet->IsLocked(true) && pwallet->IsLocked())
@@ -2683,7 +2683,7 @@ UniValue keepass(const JSONRPCRequest& request)
 
     std::string strCommand;
 
-    if (request.params.size() >= 1)
+    if (!request.params[0].isNull())
         strCommand = request.params[0].get_str();
 
     if (request.fHelp  ||

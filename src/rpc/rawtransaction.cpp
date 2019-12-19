@@ -962,7 +962,7 @@ UniValue sendrawtransaction(const JSONRPCRequest& request)
         nMaxRawTxFee = 0;
 
     bool fBypassLimits = false;
-    if (request.params.size() > 3)
+    if (!request.params[3].isNull())
         fBypassLimits = request.params[3].get_bool();
 
     CCoinsViewCache &view = *pcoinsTip;

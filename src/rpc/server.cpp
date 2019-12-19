@@ -276,9 +276,9 @@ UniValue help(const JSONRPCRequest& jsonRequest)
         );
 
     std::string strCommand, strSubCommand;
-    if (jsonRequest.params.size() > 0)
+    if (!jsonRequest.params[0].isNull())
         strCommand = jsonRequest.params[0].get_str();
-    if (jsonRequest.params.size() > 1)
+    if (!jsonRequest.params[1].isNull())
         strSubCommand = jsonRequest.params[1].get_str();
 
     return tableRPC.help(strCommand, strSubCommand, jsonRequest);
