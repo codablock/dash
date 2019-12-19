@@ -985,7 +985,7 @@ UniValue protx_list(const JSONRPCRequest& request)
 #ifdef ENABLE_WALLET
         LOCK2(cs_main, pwallet->cs_wallet);
 
-        if (!request.params[3].isNull()) {
+        if (!request.params[4].isNull()) {
             protx_list_help();
         }
 
