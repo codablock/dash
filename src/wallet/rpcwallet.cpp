@@ -823,8 +823,8 @@ UniValue getbalance(const JSONRPCRequest& request)
 
     const UniValue& account_value = request.params[0];
     const UniValue& minconf = request.params[1];
+    const UniValue& addlocked = request.params[2];
     const UniValue& include_watchonly = request.params[3];
-    const UniValue& addlocked = request.params[3];
 
     if (account_value.isNull()) {
         if (!minconf.isNull()) {
@@ -1070,10 +1070,12 @@ UniValue sendmany(const JSONRPCRequest& request)
     if (!request.params[5].isNull())
         subtractFeeFrom = request.params[5].get_array();
 
+    // request.params[6] ("use_is") is deprecated and not used here
+
     CCoinControl coin_control;
 
     if (!request.params[7].isNull()) {
-        coin_control.UsePrivateSend(request.params.get_bool());
+        coin_control.UsePrivateSend(request.params[7].get_bool());
     }
 
     if (!request.params[8].isNull()) {
