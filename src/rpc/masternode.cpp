@@ -433,7 +433,7 @@ void masternode_winners_help()
 
 UniValue masternode_winners(const JSONRPCRequest& request)
 {
-    if (request.fHelp)
+    if (request.fHelp || request.params.size() > 3)
         masternode_winners_help();
 
     int nHeight;
@@ -455,9 +455,6 @@ UniValue masternode_winners(const JSONRPCRequest& request)
     if (!request.params[2].isNull()) {
         strFilter = request.params[2].get_str();
     }
-
-    if (!request.params[3].isNull())
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'masternode winners ( \"count\" \"filter\" )'");
 
     UniValue obj(UniValue::VOBJ);
     auto mapPayments = GetRequiredPaymentsStrings(nHeight - nLast, nHeight + 20);
