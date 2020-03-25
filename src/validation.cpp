@@ -2857,7 +2857,6 @@ bool ActivateBestChain(CValidationState &state, const CChainParams& chainparams,
             SyncWithValidationInterfaceQueue();
         }
 
-
         const CBlockIndex *pindexFork;
         bool fInitialDownload;
         {
